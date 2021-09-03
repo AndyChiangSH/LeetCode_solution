@@ -12,3 +12,6 @@
 ```
 https://andychiangsh.github.io/LeetCode_solution/
 ```
+
+## 備份紀錄
+1. 2021/09/03：25、32、44、564、4
