@@ -1,0 +1,939 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>jaby的解法</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2ff4e1fb-6287-4580-9af9-ff0c86c0ea81" class="page sans"><header><h1 class="page-title">jaby的解法</h1></header><div class="page-body"><ul id="7b278f42-6985-4725-ae6d-6275a5488a28" class="toggle"><li><details open=""><summary>程式碼</summary><pre id="9ea451a0-9e5f-4689-aee0-059bdb2c362c" class="code"><code>char * nearestPalindromic(char * n){
+
+	int len=strlen(n);
+    int hlen=len/2;
+	if(len==1){
+		*n-=1;
+		return n;
+	}
+	int i, j, k;
+	if(len==2&amp;&amp;(n[0]!=&#x27;9&#x27;&amp;&amp;n[1]!=&#x27;9&#x27;)){
+		if(n[0]==&#x27;1&#x27;){
+			
+			if(n[1]==&#x27;0&#x27;||n[1]==&#x27;1&#x27;){
+				char *m=malloc(sizeof(char)*1);
+				m=&quot;9&quot;;
+				return m;
+			}
+			else if(n[1]&lt;=&#x27;5&#x27;){
+				n=&quot;11&quot;;
+				return n;
+			}
+			else{
+				n=&quot;22&quot;;
+				return n;
+			}
+		}
+		else{
+			//printf(&quot;in\n\n&quot;);
+			if(n[1]&gt;n[0]){
+				if(n[1]-n[0]&gt;=6){
+					n[0]--;
+				}
+					n[1]=n[0];
+					return n;
+			}
+			else if(n[1]&lt;n[0]){
+				if(n[0]-n[1]&gt;=6){
+					n[0]--;
+				}
+					n[1]=n[0];
+					return n;
+			}
+			else{
+				n[0]--;
+				n[1]=n[0];
+				return n;
+			}
+		}
+	}
+	
+	int flag=0, nine=0;
+	if(n[0]==&#x27;1&#x27;){
+		flag++;
+	}
+	else if(n[0]==&#x27;9&#x27;){
+		nine++;
+	}
+	for(i=1;i&lt;len;i++){
+		if(n[i]==&#x27;0&#x27;){
+			flag++;
+		}
+		else if(n[i]==&#x27;9&#x27;){
+			nine++;
+		}
+	}
+	
+	if(flag==len||(flag==len-1&amp;&amp;n[i-1]==&#x27;1&#x27;)){
+		char *m=malloc(sizeof(char)*len);
+		for(i=0;i&lt;len-1;i++){
+			m[i]=&#x27;9&#x27;;
+		}
+		m[i]=&#x27;\0&#x27;;
+		return m;
+	}
+	
+	else if(nine==len){
+		char *m=malloc(sizeof(char)*(len+2));
+		*m=&#x27;1&#x27;;
+		for(i=1;i&lt;len;i++){
+			m[i]=&#x27;0&#x27;;
+		}
+		m[i]=&#x27;1&#x27;;
+		m[i+1]=&#x27;\0&#x27;;
+		return m;
+	}
+	
+	long int pow;
+	long int num=0, numm=0, nu=0;
+	int small=0, big=0;
+	char *m=malloc(sizeof(char)*(len+1));
+	char *mm=malloc(sizeof(char)*(len+1));
+	for(i=0;i&lt;hlen;i++){
+		m[i]=n[i];
+		mm[i]=n[i];
+		m[len-i-1]=m[i];
+		mm[len-i-1]=mm[i];
+	}
+    m[len]=&#x27;\0&#x27;;
+    mm[len]=&#x27;\0&#x27;;
+
+	if(len%2==0){
+        if(!(strcmp(n, m))){
+            if(m[hlen-1]+1&gt;&#x27;9&#x27;){
+                m[hlen-1]=&#x27;0&#x27;;
+                m[hlen-2]++;
+                for(k=hlen-2;k&gt;=0;k--){
+					if(m[k]&gt;&#x27;9&#x27;){
+						m[k]-=10;
+						m[k-1]++;
+					}
+					else{
+						break;
+					}
+				}
+                
+            }
+            else{
+                m[hlen-1]++;
+            }
+            if(mm[hlen-1]-1&lt;&#x27;0&#x27;){
+                mm[hlen-1]=&#x27;9&#x27;;
+                mm[hlen-2]--;
+                for(k=hlen-2;k&gt;=0;k--){
+					if(mm[k]&lt;&#x27;0&#x27;){
+						mm[k]+=10;
+						mm[k-1]--;
+					}
+					else{
+						break;
+					}
+				}
+                
+            }
+            else{
+                mm[hlen-1]--;
+            }
+            for(k=0;k&lt;hlen;k++){
+                m[len-k-1]=m[k];
+                mm[len-k-1]=mm[k];
+            }
+            //printf(&quot;%s %s\n&quot;, m, mm);
+        }
+        else{
+            for(j=hlen;j&lt;len;j++){
+
+                if(m[j]&lt;n[j]){
+                    mm[hlen-1]++;
+                    for(k=hlen-1;k&gt;0;k--){
+                        if(mm[k]&gt;&#x27;9&#x27;){
+                            mm[k]-=10;
+                            mm[k-1]++;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+                    for(k=0;k&lt;hlen;k++){
+                        mm[len-k-1]=mm[k];
+                    }
+                    break;
+                }
+                else if(m[j]&gt;n[j]){
+                    mm[hlen-1]--;
+                    for(k=hlen-1;k&gt;0;k--){
+                        if(mm[k]&lt;&#x27;0&#x27;){
+                            mm[k]+=10;
+                            mm[k-1]--;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+                    for(k=0;k&lt;hlen;k++){
+                        mm[len-k-1]=mm[k];
+                    }
+                    break;
+                }
+            }
+            //printf(&quot;%s %s\n&quot;, m, mm);
+        }
+        
+	}
+
+	else{
+		
+		m[hlen]=n[hlen];
+		mm[hlen]=n[hlen];
+        if(!(strcmp(n, m))){
+            if(m[hlen]+1&gt;&#x27;9&#x27;){
+                m[hlen]=&#x27;0&#x27;;
+                m[hlen-1]++;
+                for(k=hlen-1;k&gt;=0;k--){
+					if(m[k]&gt;&#x27;9&#x27;){
+						m[k]-=10;
+						m[k-1]++;
+					}
+					else{
+						break;
+					}
+				}
+                
+            }
+            else{
+                m[hlen]++;
+            }
+            if(mm[hlen]-1&lt;&#x27;0&#x27;){
+                mm[hlen]=&#x27;9&#x27;;
+                mm[hlen-1]--;
+                for(k=hlen-1;k&gt;=0;k--){
+					if(mm[k]&lt;&#x27;0&#x27;){
+						mm[k]+=10;
+						mm[k-1]--;
+					}
+					else{
+						break;
+					}
+				}
+                
+            }
+            else{
+                mm[hlen]--;
+            }
+            for(k=0;k&lt;hlen;k++){
+                m[len-k-1]=m[k];
+                mm[len-k-1]=mm[k];
+            }
+        }
+        else{
+            for(j=hlen+1;j&lt;len;j++){
+
+                if(m[j]&lt;n[j]){
+                    mm[hlen]++;
+                    for(k=hlen;k&gt;0;k--){
+
+                        if(mm[k]&gt;&#x27;9&#x27;){
+                            mm[k]-=10;
+                            mm[k-1]++;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+                    for(k=0;k&lt;hlen;k++){
+                        m[len-k-1]=m[k];
+                    }
+                    break;
+                }
+                else if(m[j]&gt;n[j]){
+                    mm[hlen]--;
+                    for(k=hlen;k&gt;0;k--){
+                        if(mm[k]&lt;&#x27;0&#x27;){
+                            mm[k]+=10;
+                            mm[k-1]--;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+                    for(k=0;k&lt;hlen;k++){
+                        mm[len-k-1]=mm[k];
+                    }
+                    break;
+                }
+            }
+        }
+	}
+    
+    
+	for(i=0;i&lt;len;i++){
+		pow=1;
+		for(j=0;j&lt;i;j++){
+			pow*=10;
+		}
+		nu+=(n[len-i-1]-48)*pow;
+		num+=(m[len-i-1]-48)*pow;
+		numm+=(mm[len-i-1]-48)*pow;
+	}
+	//printf(&quot;nu=%ld num=%ld numm=%ld\n&quot;, nu, num, numm);
+    
+	if(num&gt;numm){
+		if((num-nu)&lt;(nu-numm)){
+			//printf(&quot;1  %s\n&quot;, mm);
+			return m;
+		}
+		else{
+			//printf(&quot;2  %s\n&quot;, m);
+			return mm;
+		}
+	}
+	else if(num&lt;numm){
+		if((numm-nu)&lt;(nu-num)){
+			//printf(&quot;3  %s\n&quot;, m);
+			return mm;
+		}
+		else{          
+			//printf(&quot;4  %s\n&quot;, mm);
+			return m;
+		}
+	}
+	else{
+		//printf(&quot;5  %s\n&quot;, mm);
+		return mm;
+	}
+}</code></pre></details></li></ul><h2 id="9ae376fd-b506-469c-8db1-c66a253d3420" class="">解題說明</h2><p id="94669c34-66c9-4846-9288-79fffe3a9176" class="">這題大部分的問題會出在2位數，所以前面就會先判斷是否為2位數。主要的操作是，把input切成一半，左邊的貼過去，存起來，這樣就是一種最接近的可能，但由於最接近的可能會是你切完一半之後左邊最後一個bit+1或-1之後的回文，所以你還要再去做一個他+1或-1的回文（ex:123999，切完貼過去找到123321，但其實124421是最接近的回文。而決定+1或-1其實可以先判斷剛切完的回文跟原本的input大小關係，但如果本來的input就是回文的話就要+1-1都存起來），之後去判斷這兩個跟input之間差的大小就好，我自己是用long int把字串存成數字去比。</p><p id="28a7ad55-e321-4586-8584-65e2ceea28b4" class="">而我有許多先判斷的if，所以看起來程式碼很長，但其實執行起來不到一半。</p><h3 id="a6d5eac9-9f44-4877-a054-bc3555c2cadb" class="">⏳ 時間複雜度：O(n)</h3><h3 id="bcfb11e3-d11c-4142-8c4e-6199876a4904" class="">💾 空間複雜度：O(2n)</h3><h2 id="d9441212-a8fe-4722-96df-a529ddc47ccc" class="">執行結果</h2><h3 id="abf6ffc9-a372-4a72-a08f-8fe6da2732a1" class="">⏳ 時間：100.00%</h3><figure id="695cce3e-a946-41e0-b1f1-e6b00a5e46ad" class="image"><a href="jaby%E7%9A%84%E8%A7%A3%E6%B3%95%202ff4e1fb628745809af9ff0c86c0ea81/Untitled.png"><img style="width:777px" src="jaby%E7%9A%84%E8%A7%A3%E6%B3%95%202ff4e1fb628745809af9ff0c86c0ea81/Untitled.png"/></a></figure><h3 id="8e5c0a3f-04de-4553-8b0f-fb36a1e222a9" class="">💾 空間：100.00%</h3><figure id="767d92bd-52d6-4a9f-a14c-26ab674aaf89" class="image"><a href="jaby%E7%9A%84%E8%A7%A3%E6%B3%95%202ff4e1fb628745809af9ff0c86c0ea81/Untitled%201.png"><img style="width:834px" src="jaby%E7%9A%84%E8%A7%A3%E6%B3%95%202ff4e1fb628745809af9ff0c86c0ea81/Untitled%201.png"/></a></figure></div></article></body></html>
